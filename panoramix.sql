@@ -135,14 +135,14 @@ INSERT INTO etape2_gaulois (id,nom,profession,village) VALUES (2,'Barometrix','M
 /* les vues sont dupliquees chez obelix */
 CREATE VIEW etape2_village_vue
 AS
-SELECT * FROM etape2_village@obelix UNION
-SELECT * FROM etape2_village@panoramix;
+SELECT * FROM system.etape2_village@obelix UNION
+SELECT * FROM system.etape2_village@panoramix;
 GRANT SELECT, INSERT, DELETE ON etape2_village_vue TO proprietaire, amisCommuns;
 
 CREATE VIEW etape2_gaulois_vue
 AS
-SELECT * FROM etape2_gaulois@obelix UNION
-SELECT * FROM etape2_gaulois@panoramix;
+SELECT * FROM system.etape2_gaulois@obelix UNION
+SELECT * FROM system.etape2_gaulois@panoramix;
 GRANT SELECT, INSERT, DELETE ON etape2_gaulois_vue TO proprietaire, amisCommuns;
 
 /* creation des triggers pour l'insertion en fragmentation horizontale */
@@ -151,10 +151,10 @@ CREATE OR REPLACE TRIGGER etape2_village_vue_trigger
 INSTEAD OF INSERT ON etape2_village_vue
 REFERENCING new AS new old AS old
 BEGIN
-	IF (:new.id % 2) = 0 THEN
-		INSERT INTO etape2_village@panoramix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
+	IF mod(:new.id, 2) = 0 THEN
+ 		INSERT INTO system.etape2_village@panoramix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
 	ELSE
-		INSERT INTO etape2_village@obelix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
+		INSERT INTO system.etape2_village@obelix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
 	END IF;
 END;
 /
@@ -163,10 +163,10 @@ CREATE OR REPLACE TRIGGER etape2_gaulois_vue_trigger
 INSTEAD OF INSERT ON etape2_gaulois_vue
 REFERENCING new AS new old AS old
 BEGIN
-	IF (:new.village % 2) = 0 THEN
-		INSERT INTO etape2_gaulois@panoramix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
+	IF mod(:new.village, 2) = 0 THEN
+		INSERT INTO system.etape2_gaulois@panoramix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
 	ELSE
-		INSERT INTO etape2_gaulois@obelix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
+		INSERT INTO system.etape2_gaulois@obelix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
 	END IF;
 END;
 /
