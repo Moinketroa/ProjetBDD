@@ -1,4 +1,4 @@
-# ProjetBDD
+# ProjetBDD - Nicolas BLIN & Jean-Marc DEBICKI
 
 ## Définition de notre BDD Distribuée
 obelix.sql et panoramix.sql définissent respectivement les bases Obelix et Panoramix.
