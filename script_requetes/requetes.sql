@@ -168,11 +168,12 @@ BEGIN
 	SAVEPOINT beginning;
 	INSERT INTO system.etape3_village_vue (id,nom,specialite,region) VALUES (4200,'Gegobrivate','Cervoise','Bretagne');
 	COMMIT;
-	INSERT INTO system.etape3_gaulois_vue (id,nom,profession,village) VALUES (666,'Ashmatix','Athlete',666);
+	INSERT INTO system.etape3_village_vue (id,nom,specialite,region) VALUES (4200,'Gegobrivate','Cervoise','Bretagne');
 	COMMIT;
 EXCEPTION
-	ROLLBACK TO beginning;
-	DBMS_OUTPUT.PUT_LINE('Insert has been rooled back to \'beginning\'');
+	WHEN DUP_VAL_ON_INDEX THEN
+		ROLLBACK TO SAVEPOINT beginning;
+		DBMS_OUTPUT.PUT_LINE('Insert has been rooled back to \'beginning\'');
 END;
 /
 
