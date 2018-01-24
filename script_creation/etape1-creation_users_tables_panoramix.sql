@@ -174,4 +174,4 @@ CREATE TABLE etape4_village (
     specialite VARCHAR(20) NOT NULL,
     region VARCHAR(20) NOT NULL
 );
-GRANT SELECT, INSERT, DELETE ON etape4_village TO proprietaire, amisCommuns, amisPanoramix;
+GRANT SELECT, INSERT ON etape4_village TO proprietaire, amisCommuns, amisPanoramix;

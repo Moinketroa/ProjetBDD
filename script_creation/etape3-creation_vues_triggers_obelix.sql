@@ -6,12 +6,12 @@ ALTER SESSION SET "_ORACLE_SCRIPT"=true;
 /*-----------------------*/
 
 /* creation de vues materialisees pour dupliquer les donnees disponibles chez panoramix */
-CREATE MATERIALIZED VIEW etape1_village_vue_mat REFRESH FAST WITH PRIMARY KEY ON COMMIT
+CREATE MATERIALIZED VIEW etape1_village_vue_mat REFRESH FAST WITH PRIMARY KEY ON DEMAND
 AS
 SELECT * FROM etape1_village@panoramix;
 GRANT SELECT ON etape1_village_vue_mat TO proprietaire, amisCommuns, amisObelix;
 
-CREATE MATERIALIZED VIEW etape1_gaulois_vue_mat REFRESH FAST WITH PRIMARY KEY ON COMMIT
+CREATE MATERIALIZED VIEW etape1_gaulois_vue_mat REFRESH FAST WITH PRIMARY KEY ON DEMAND
 AS
 SELECT * FROM etape1_gaulois@panoramix;
 GRANT SELECT ON etape1_gaulois_vue_mat TO proprietaire, amisCommuns, amisObelix;
@@ -40,8 +40,8 @@ CREATE OR REPLACE TRIGGER etape2_village_vue_trigger
 INSTEAD OF INSERT ON etape2_village_vue
 REFERENCING new AS new old AS old
 BEGIN
-	IF (:new.id % 2) = 0 THEN
-		INSERT INTO etape2_village@panoramix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
+	IF mod(:new.id, 2) = 0 THEN
+ 		INSERT INTO etape2_village@panoramix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
 	ELSE
 		INSERT INTO etape2_village@obelix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
 	END IF;
@@ -52,7 +52,7 @@ CREATE OR REPLACE TRIGGER etape2_gaulois_vue_trigger
 INSTEAD OF INSERT ON etape2_gaulois_vue
 REFERENCING new AS new old AS old
 BEGIN
-	IF (:new.village % 2) = 0 THEN
+	IF mod(:new.village, 2) = 0 THEN
 		INSERT INTO etape2_gaulois@panoramix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
 	ELSE
 		INSERT INTO etape2_gaulois@obelix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
@@ -69,14 +69,14 @@ END;
 CREATE VIEW etape3_village_vue 
 AS
 SELECT villageO.id, villageP.nom, villageO.specialite, villageP.region
-FROM etape3_village@obelix AS villageO JOIN etape3_village@panoramix AS villageP
+FROM etape3_village@obelix villageO JOIN etape3_village@panoramix villageP
 ON villageO.id = villageP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_village_vue TO proprietaire, amisCommuns;
 
 CREATE VIEW etape3_gaulois_vue 
 AS
-SELECT gauloisO.id, gauloisP.nom, gauloisO.profession, gauloisP.village
-FROM etape3_gaulois@obelix AS gauloisO JOIN etape3_gaulois@panoramix AS gauloisP
+SELECT gauloisO.id, gauloisP.nom, gauloisO.profession, gauloisO.village
+FROM etape3_gaulois@obelix gauloisO JOIN etape3_gaulois@panoramix gauloisP
 ON gauloisO.id = gauloisP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_gaulois_vue TO proprietaire, amisCommuns;
 
@@ -120,18 +120,4 @@ BEGIN
 	DELETE FROM etape3_gaulois@panoramix WHERE id = :old.id;
 END;
 /
-
-/*---------------------------------*/
-/* ETAPE 4 FRAGMENTATION DU SCHEMA */
-/*---------------------------------*/
-
-/* creation de la table gaulois, presente uniquement chez obelix */
-CREATE TABLE etape4_gaulois (
-    id INT PRIMARY KEY NOT NULL,
-    nom VARCHAR(20) NOT NULL,
-    profession VARCHAR(20) NOT NULL,
-    village INT NOT NULL,
-    FOREIGN KEY (village) REFERENCES etape4_village@panoramix(id)
-);
-GRANT SELECT ON etape4_gaulois TO proprietaire, amisCommuns, amisObelix;
 

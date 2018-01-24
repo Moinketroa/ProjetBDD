@@ -25,7 +25,7 @@ CREATE OR REPLACE TRIGGER etape2_village_vue_trigger
 INSTEAD OF INSERT ON etape2_village_vue
 REFERENCING new AS new old AS old
 BEGIN
-	IF (:new.id % 2) = 0 THEN
+	IF mod(:new.id, 2) = 0 THEN
 		INSERT INTO etape2_village@panoramix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
 	ELSE
 		INSERT INTO etape2_village@obelix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
@@ -37,7 +37,7 @@ CREATE OR REPLACE TRIGGER etape2_gaulois_vue_trigger
 INSTEAD OF INSERT ON etape2_gaulois_vue
 REFERENCING new AS new old AS old
 BEGIN
-	IF (:new.village % 2) = 0 THEN
+	IF mod(:new.village, 2) = 0 THEN
 		INSERT INTO etape2_gaulois@panoramix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
 	ELSE
 		INSERT INTO etape2_gaulois@obelix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
@@ -54,14 +54,14 @@ END;
 CREATE VIEW etape3_village_vue 
 AS
 SELECT villageO.id, villageP.nom, villageO.specialite, villageP.region
-FROM etape3_village@obelix AS villageO JOIN etape3_village@panoramix AS villageP
+FROM etape3_village@obelix villageO JOIN etape3_village@panoramix villageP
 ON villageO.id = villageP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_village_vue TO proprietaire, amisCommuns;
 
 CREATE VIEW etape3_gaulois_vue 
 AS
-SELECT gauloisO.id, gauloisP.nom, gauloisO.profession, gauloisP.village
-FROM etape3_gaulois@obelix AS gauloisO JOIN etape3_gaulois@panoramix AS gauloisP
+SELECT gauloisO.id, gauloisP.nom, gauloisO.profession, gauloisO.village
+FROM etape3_gaulois@obelix gauloisO JOIN etape3_gaulois@panoramix gauloisP
 ON gauloisO.id = gauloisP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_gaulois_vue TO proprietaire, amisCommuns;
 
@@ -105,4 +105,34 @@ BEGIN
 	DELETE FROM etape3_gaulois@panoramix WHERE id = :old.id;
 END;
 /
+
+/*---------------------------------*/
+/* ETAPE 4 FRAGMENTATION DU SCHEMA */
+/*---------------------------------*/
+
+/* creation d'un vue et d'un trigger pour emuler la cle etrangere lors de la suppression */
+CREATE VIEW etape4_village_vue
+AS
+SELECT * FROM etape4_village;
+GRANT SELECT, INSERT, DELETE ON etape4_village_vue TO proprietaire, amisCommuns, amisPanoramix;
+
+/* trigger sur la suppression */
+CREATE OR REPLACE TRIGGER etape4_village_vue_trigger_delete
+INSTEAD OF DELETE ON etape4_village_vue
+FOR EACH ROW
+DECLARE
+	gaulois_village INT;
+BEGIN
+	SELECT village INTO gaulois_village
+	FROM etape4_gaulois@obelix
+	WHERE village = :old.id;
+	
+	IF gaulois_village IS NOT NULL THEN
+		raise_application_error (-20001, 'le village ne peut pas etre supprime, il depend d un ou plusieurs gaulois');
+	ELSE
+		DELETE FROM etape4_village WHERE id = :old.id;
+	END IF;
+END;
+/
+
 

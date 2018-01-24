@@ -269,4 +269,29 @@ CREATE TABLE etape4_village (
     specialite VARCHAR(20) NOT NULL,
     region VARCHAR(20) NOT NULL
 );
-GRANT SELECT, INSERT, DELETE ON etape4_village TO proprietaire, amisCommuns, amisPanoramix;
+GRANT SELECT, INSERT ON etape4_village TO proprietaire, amisCommuns, amisPanoramix;
+
+/* creation d'un vue et d'un trigger pour emuler la cle etrangere lors de la suppression */
+CREATE VIEW etape4_village_vue
+AS
+SELECT * FROM etape4_village;
+GRANT SELECT, INSERT, DELETE ON etape4_village_vue TO proprietaire, amisCommuns, amisPanoramix;
+
+/* trigger sur la suppression */
+CREATE OR REPLACE TRIGGER etape4_village_vue_trigger_delete
+INSTEAD OF DELETE ON etape4_village_vue
+FOR EACH ROW
+DECLARE
+	gaulois_village INT;
+BEGIN
+	SELECT village INTO gaulois_village
+	FROM etape4_gaulois@obelix
+	WHERE village = :old.id;
+	
+	IF gaulois_village IS NOT NULL THEN
+		raise_application_error (-20001, 'le village ne peut pas etre supprime, il depend d un ou plusieurs gaulois');
+	ELSE
+		DELETE FROM etape4_village WHERE id = :old.id;
+	END IF;
+END;
+/
