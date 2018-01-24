@@ -3,73 +3,123 @@
 /*---------*/
 
 /* Sur Panoramix */
-/** Requete de localisation des gaulois sur panoramix **/
-/*** ROLE : PROPRIETAIRE ***/
+/*- Requete de localisation des gaulois sur panoramix -*/
+/*-- ROLE : PROPRIETAIRE --*/
 CONNECT obelix/obelix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
-/*** ROLE : AMISCOMMUNS ***/
+/*-- ROLE : AMISCOMMUNS --*/
 CONNECT asterix/asterix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
-/*** ROLE : AMISPANORAMIX ***/
+/*-- ROLE : AMISPANORAMIX --*/
 CONNECT informatix/informatix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
-/*** ROLE : ROMAINS ***/
+/*-- ROLE : ROMAINS --*/
 CONNECT escuelleplus/escuelleplus;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
 /* Sur Obelix */
-/** Requete de localisation des gaulois sur panoramix **/
-/*** ROLE : PROPRIETAIRE ***/
+/*- Requete de localisation des gaulois sur panoramix -*/
+/*-- ROLE : PROPRIETAIRE --*/
 CONNECT panoramix/panoramix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
-/*** ROLE : AMISCOMMUNS ***/
+/*-- ROLE : AMISCOMMUNS --*/
 CONNECT asterix/asterix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
-/*** ROLE : AMISOBELIX ***/
+/*-- ROLE : AMISOBELIX --*/
 CONNECT falbala/falbala;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
-/*** ROLE : ROMAINS ***/
+/*-- ROLE : ROMAINS --*/
 CONNECT escuelleplus/escuelleplus;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois@panoramix g, etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
 
-/** Requete de localisation des gaulois sur la vue materialisee sur obelix **/
-/*** ROLE : AMISOBELIX ***/
+/*- Requete de localisation des gaulois sur la vue materialisee sur obelix -*/
+/*-- ROLE : AMISOBELIX --*/
 CONNECT falbala/falbala;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois_vue_mat g, etape1_village_vue_mat v WHERE g.village=v.id;
+FROM system.etape1_gaulois_vue_mat g, system.etape1_village_vue_mat v WHERE g.village=v.id;
 
-/*** ROLE : ROMAINS ***/
+/*-- ROLE : ROMAINS --*/
 CONNECT escuelleplus/escuelleplus;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape1_gaulois_vue_mat g, etape1_village_vue_mat v WHERE g.village=v.id;
+FROM system.etape1_gaulois_vue_mat g, system.etape1_village_vue_mat v WHERE g.village=v.id;
 
 /*---------*/
 /* ETAPE 2 */
 /*---------*/
+
+/* DEPUIS PANORAMIX */
+CONNECT panoramix/panoramix;
+/* Tables locales frangmentees */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois@panoramix g, system.etape2_village@panoramix v WHERE g.village=v.id;
+
+/* Select sur la vue de defragmentation */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois_vue@panoramix g, system.etape2_village_vue@panoramix v WHERE g.village=v.id;
+
+/* insertion d'un village avec un id impair qui sera cree sur la base obelix */
+INSERT INTO system.etape2_village_vue (id,nom,specialite,region) VALUES (55,'Rome','Politique','Italie');
+
+/* insertion d'un gaulois avec lie a rome qui sera cree sur la base obelix */
+INSERT INTO system.etape2_gaulois_vue (id,nom,profession,village) VALUES (1664,'Reveilleaheurefix','Marchand de cervoise',55);
+
+/* visualisation des changements */
+/* local */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois@panoramix g, system.etape2_village@panoramix v WHERE g.village=v.id;
+/* vue */
+/* Select sur la vue de defragmentation */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois_vue@panoramix g, system.etape2_village_vue@panoramix v WHERE g.village=v.id;
+
+/* DEPUIS OBELIX */
+CONNECT obelix/obelix;
+/* Tables locales frangmentees */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois@panoramix g, system.etape2_village@panoramix v WHERE g.village=v.id;
+
+/* Select sur la vue de defragmentation */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois_vue@panoramix g, system.etape2_village_vue@panoramix v WHERE g.village=v.id;
+
+/* insertion d'un village avec un id pair qui sera cree sur la base panoramix */
+INSERT INTO system.etape2_village_vue (id,nom,specialite,region) VALUES (42,'Divodurum','Menuiserie','Lorraine');
+
+/* insertion d'un gaulois avec lie a divodurum qui sera cree sur la base panoramix */
+INSERT INTO system.etape2_gaulois_vue (id,nom,profession,village) VALUES (1664,'Inezemix','Barde',42);
+
+/* visualisation des changements */
+/* local */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois@panoramix g, system.etape2_village@panoramix v WHERE g.village=v.id;
+/* vue */
+/* Select sur la vue de defragmentation */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois_vue@panoramix g, system.etape2_village_vue@panoramix v WHERE g.village=v.id;
 
 /* ETAPE 3 */
 /* Transaction qui echoue */
