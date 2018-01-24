@@ -99,6 +99,10 @@ INSERT INTO etape1_gaulois (id,nom,profession,village) VALUES (3,'Aplusbegalix',
 INSERT INTO etape1_gaulois (id,nom,profession,village) VALUES (4,'Porquepix','Marchand de vin',3);
 INSERT INTO etape1_gaulois (id,nom,profession,village) VALUES (5,'Netflix','Realisateur',1);
 
+/* creation des logs pour les vues materialisees */
+CREATE MATERIALIZED VIEW LOG ON etape1_village WITH PRIMARY KEY;
+CREATE MATERIALIZED VIEW LOG ON etape1_gaulois WITH PRIMARY KEY;
+
 /*-------------------------------------*/
 /* ETAPE 2 : FRAGMENTATION HORIZONTALE */
 /*-------------------------------------*/

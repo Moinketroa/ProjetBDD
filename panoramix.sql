@@ -88,6 +88,10 @@ CREATE TABLE etape1_gaulois (
 );
 GRANT SELECT, INSERT, DELETE ON etape1_gaulois TO proprietaire, amisCommuns, amisPanoramix;
 
+/* creation des logs pour les vues materialisees */
+CREATE MATERIALIZED VIEW LOG ON etape1_village WITH PRIMARY KEY;
+CREATE MATERIALIZED VIEW LOG ON etape1_gaulois WITH PRIMARY KEY;
+
 /* insertion de tuples */
 INSERT INTO etape1_village (id,nom,specialite,region) VALUES (1,'Alesia','Elevage','Cumaracum');
 INSERT INTO etape1_village (id,nom,specialite,region) VALUES (2,'Anichium','Peche','Condate');

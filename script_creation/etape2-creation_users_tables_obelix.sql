@@ -149,8 +149,32 @@ CREATE TABLE etape4_gaulois (
     id INT PRIMARY KEY NOT NULL,
     nom VARCHAR(20) NOT NULL,
     profession VARCHAR(20) NOT NULL,
-    village INT NOT NULL,
-    FOREIGN KEY (village) REFERENCES etape4_village@panoramix(id)
+    village INT NOT NULL
 );
-GRANT SELECT ON etape4_gaulois TO proprietaire, amisCommuns, amisObelix;
+GRANT SELECT, DELETE ON etape4_gaulois TO proprietaire, amisCommuns, amisObelix;
 
+/* creation d'un vue et d'un trigger pour emuler la cle etrangere lors de l'insertion */
+CREATE VIEW etape4_gaulois_vue
+AS
+SELECT * FROM etape4_gaulois;
+GRANT SELECT, INSERT, DELETE ON etape4_gaulois_vue TO proprietaire, amisCommuns, amisObelix;
+
+/* trigger sur l'insertion */
+CREATE OR REPLACE TRIGGER etape4_gaulois_trigger
+INSTEAD OF INSERT ON etape4_gaulois_vue
+REFERENCING new AS new old AS old
+DECLARE
+	village_id INT;
+BEGIN
+	SELECT id INTO village_id
+	FROM etape4_village@panoramix
+	WHERE id = :new.id;
+	
+	IF village_id IS NULL THEN
+		raise_application_error (-20001, 'le village n existe pas');
+	ELSE
+		INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
+	END IF;
+END;
+/
+		
