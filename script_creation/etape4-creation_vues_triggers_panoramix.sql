@@ -1,3 +1,6 @@
+/*--*/
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
+
 /*-------------------------------------*/
 /* ETAPE 2 : FRAGMENTATION HORIZONTALE */
 /*-------------------------------------*/

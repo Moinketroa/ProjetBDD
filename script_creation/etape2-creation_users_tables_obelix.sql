@@ -1,11 +1,11 @@
-/* modification de la session pour etre sur la bdd plugable definie par défaut sur 'orclpdb' pendant l'installation */
-ALTER SESSION SET container=orclpdb;
+/*--*/
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
 
 /* creation database link vers panoramix */
 CREATE PUBLIC DATABASE LINK panoramix.projet using 'panoramix';
 
 /* creation tablespace */
-CREATE TABLESPACE tablespace_users DATAFILE 'tablespaceusers.dbf' size 50M ONLINE;
+CREATE TABLESPACE tablespace_users DATAFILE 'tablespace__users.dbf' size 50M ONLINE;
 
 /*---------------------------------------------*/
 /* CREATION DE ROLES ET DOTATION DE PRIVILEGES */

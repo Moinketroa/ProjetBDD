@@ -1,5 +1,5 @@
-/* modification de la session pour etre sur la bdd plugable definie par défaut sur 'orclpdb' pendant l'installation */
-ALTER SESSION SET container=orclpdb;
+/*--*/
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
 
 /* creation database link vers obelix */
 CREATE PUBLIC DATABASE LINK obelix.projet using 'obelix';
