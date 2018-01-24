@@ -72,7 +72,6 @@ FROM system.etape1_gaulois_vue_mat g, system.etape1_village_vue_mat v WHERE g.vi
 /*---------*/
 
 /* DEPUIS PANORAMIX */
-CONNECT panoramix/panoramix;
 /* Tables locales frangmentees */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
 FROM system.etape2_gaulois g, system.etape2_village v WHERE g.village=v.id;
@@ -97,7 +96,6 @@ SELECT g.nom, g.profession, v.nom village, v.specialite, v.region
 FROM system.etape2_gaulois_vue g, system.etape2_village_vue v WHERE g.village=v.id;
 
 /* DEPUIS OBELIX */
-CONNECT obelix/obelix;
 /* Tables locales frangmentees */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
 FROM system.etape2_gaulois g, system.etape2_village v WHERE g.village=v.id;
@@ -116,28 +114,78 @@ INSERT INTO system.etape2_gaulois_vue (id,nom,profession,village) VALUES (1664,'
 /* local */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
 FROM system.etape2_gaulois g, system.etape2_village v WHERE g.village=v.id;
+
+SELECT g.nom, g.profession, v.id id_village, v.nom village, v.specialite, v.region 
+FROM system.etape2_gaulois g, system.etape2_village v WHERE g.village=v.id;
 /* vue */
 /* Select sur la vue de defragmentation */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
 FROM system.etape2_gaulois_vue g, system.etape2_village_vue v WHERE g.village=v.id;
 
+/*---------*/
 /* ETAPE 3 */
+/*---------*/
+
+/* visualisation des tables locales */
+SELECT * FROM system.etape3_village;
+SELECT * FROM system.etape3_gaulois;
+
+/* Select sur la vue de defragmentation */
+SELECT * FROM system.etape3_village_vue;
+SELECT * FROM system.etape3_gaulois_vue;
+
+/* insertion d'un village qui sera fragmente entre les 2 bases */
+INSERT INTO system.etape2_village_vue (id,nom,specialite,region) VALUES (55,'Rome','Politique','Italie');
+
+/* insertion d'un gaulois avec lie a rome qui sera fragmente entre les 2 bases */
+INSERT INTO system.etape2_gaulois_vue (id,nom,profession,village) VALUES (1664,'Reveilleaheurefix','Marchand de cervoise',55);
+
+/* visualisation des changements */
+/* local */
+SELECT * FROM system.etape3_village;
+SELECT * FROM system.etape3_gaulois;
+
+/* vue */
+SELECT * FROM system.etape3_village_vue;
+SELECT * FROM system.etape3_gaulois_vue;
+
+/* affichage de la localisation de tout les gaulois */
+SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
+FROM system.etape3_gaulois_vue g, system.etape3_village_vue v WHERE g.village=v.id;
+
+/* supression d'un gaulois */
+DELETE FROM system.etape3_gaulois_vue WHERE id = 1664;
+
+/* visualisation des changements */
+/* local */
+SELECT * FROM system.etape3_gaulois;
+
+/* vue */
+SELECT * FROM system.etape3_gaulois_vue;
+
 /* Transaction qui echoue */
 BEGIN
 	SAVEPOINT beginning;
-	INSERT INTO etape3_village_vue (id,nom,specialite,region) VALUES (42,'Rome','Politique','Italie');
+	INSERT INTO system.etape3_village_vue (id,nom,specialite,region) VALUES (4200,'Gegobrivate','Cervoise','Bretagne');
 	COMMIT;
-	INSERT INTO etape3_gaulois_vue (id,nom,profession,village) VALUES (1664,'Reveilleaheurefix','Marchand de cervoise',666);
+	INSERT INTO system.etape3_gaulois_vue (id,nom,profession,village) VALUES (666,'Ashmatix','Athlete',666);
 	COMMIT;
 EXCEPTION
 	ROLLBACK TO beginning;
 	DBMS_OUTPUT.PUT_LINE('Insert has been rooled back to \'beginning\'');
 END;
 
+/*---------*/
 /* ETAPE 4 */
+/*---------*/
+
+/* Visualisation du schema */
+SELECT * FROM system.etape4_gaulois@obelix;
+SELECT * FROM system.etape4_village@panoramix;
+
 /* Localisation des gaulois pour l'etape 4 */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM etape4_gaulois@obelix g, etape4_village@panoramix v WHERE g.village=v.id;
+FROM system.etape4_gaulois@obelix g, system.etape4_village@panoramix v WHERE g.village=v.id;
 
 /* deadlock */
 /* execute chez obelix */
@@ -147,7 +195,7 @@ DECLARE
 BEGIN
 	/* blocage sur la table gaulois */
 	SELECT id INTO gaulois_id
-	FROM etape4_gaulois@obelix
+	FROM system.etape4_gaulois@obelix
 	WHERE id = 1
 	FOR UPDATE;
  
@@ -156,8 +204,8 @@ BEGIN
 
 	/* tentative d'acces sur la table village bloquee */
 	SELECT id INTO village_id
-	FROM   etape4_village@panoramix
-	WHERE  id = 1
+	FROM system.etape4_village@panoramix
+	WHERE id = 1
 	FOR UPDATE;
 END;
 
@@ -168,7 +216,7 @@ DECLARE
 BEGIN
 	/* blocage sur la table village */
 	SELECT id INTO village_id
-	FROM etape4_village@panoramix
+	FROM system.etape4_village@panoramix
 	WHERE id = 1
 	FOR UPDATE;
  
@@ -177,7 +225,7 @@ BEGIN
 
 	/* tentative d'acces sur la table gaulois bloquee */
 	SELECT id INTO gaulois_id
-	FROM   etape4_gaulois@obelix
-	WHERE  id = 1
+	FROM system.etape4_gaulois@obelix
+	WHERE id = 1
 	FOR UPDATE;
 END;

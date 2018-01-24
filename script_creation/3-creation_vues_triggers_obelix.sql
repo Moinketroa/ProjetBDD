@@ -69,14 +69,14 @@ END;
 CREATE VIEW etape3_village_vue 
 AS
 SELECT villageO.id, villageP.nom, villageO.specialite, villageP.region
-FROM etape3_village@obelix villageO JOIN etape3_village@panoramix villageP
+FROM system.etape3_village@obelix villageO JOIN system.etape3_village@panoramix villageP
 ON villageO.id = villageP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_village_vue TO proprietaire, amisCommuns;
 
 CREATE VIEW etape3_gaulois_vue 
 AS
 SELECT gauloisO.id, gauloisP.nom, gauloisO.profession, gauloisO.village
-FROM etape3_gaulois@obelix gauloisO JOIN etape3_gaulois@panoramix gauloisP
+FROM system.etape3_gaulois@obelix gauloisO JOIN system.etape3_gaulois@panoramix gauloisP
 ON gauloisO.id = gauloisP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_gaulois_vue TO proprietaire, amisCommuns;
 
@@ -88,8 +88,8 @@ CREATE OR REPLACE TRIGGER etape3_village_vue_trigger_insert
 INSTEAD OF INSERT ON etape3_village_vue
 REFERENCING new AS new old AS old
 BEGIN
-	INSERT INTO etape3_village@obelix (id,specialite) VALUES (:new.id, :new.specialite);
-	INSERT INTO etape3_village@panoramix (id,nom,region) VALUES (:new.id, :new.nom, :new.region);
+	INSERT INTO system.etape3_village@obelix (id,specialite) VALUES (:new.id, :new.specialite);
+	INSERT INTO system.etape3_village@panoramix (id,nom,region) VALUES (:new.id, :new.nom, :new.region);
 END;
 /
 
@@ -97,8 +97,8 @@ CREATE OR REPLACE TRIGGER etape3_gaulois_vue_trigger_insert
 INSTEAD OF INSERT ON etape3_gaulois_vue
 REFERENCING new AS new old AS old
 BEGIN
-	INSERT INTO etape3_gaulois@obelix (id,profession,village) VALUES (:new.id, :new.profession, :new.village);
-	INSERT INTO etape3_gaulois@panoramix (id,nom) VALUES (:new.id, :new.nom);
+	INSERT INTO system.etape3_gaulois@obelix (id,profession,village) VALUES (:new.id, :new.profession, :new.village);
+	INSERT INTO system.etape3_gaulois@panoramix (id,nom) VALUES (:new.id, :new.nom);
 END;
 /
 
@@ -107,8 +107,8 @@ CREATE OR REPLACE TRIGGER etape3_village_vue_trigger_delete
 INSTEAD OF DELETE ON etape3_village_vue
 FOR EACH ROW
 BEGIN
-	DELETE FROM etape3_village@obelix WHERE id = :old.id;
-	DELETE FROM etape3_village@panoramix WHERE id = :old.id;
+	DELETE FROM system.etape3_village@obelix WHERE id = :old.id;
+	DELETE FROM system.etape3_village@panoramix WHERE id = :old.id;
 END;
 /
 
@@ -116,8 +116,8 @@ CREATE OR REPLACE TRIGGER etape3_gaulois_vue_trigger_delete
 INSTEAD OF DELETE ON etape3_gaulois_vue
 FOR EACH ROW
 BEGIN
-	DELETE FROM etape3_gaulois@obelix WHERE id = :old.id;
-	DELETE FROM etape3_gaulois@panoramix WHERE id = :old.id;
+	DELETE FROM system.etape3_gaulois@obelix WHERE id = :old.id;
+	DELETE FROM system.etape3_gaulois@panoramix WHERE id = :old.id;
 END;
 /
 

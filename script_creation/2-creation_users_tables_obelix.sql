@@ -42,6 +42,11 @@ CREATE ROLE romains;
 /* dotation des droits de connection pour faciliter le changement de role */
 GRANT CONNECT TO romains;
 
+GRANT INHERIT REMOTE PRIVILEGES ON proprietaire TO system;
+GRANT INHERIT REMOTE PRIVILEGES ON amisCommuns TO system;
+GRANT INHERIT REMOTE PRIVILEGES ON amisObelix TO system;
+GRANT INHERIT REMOTE PRIVILEGES ON romains TO system;
+
 /*---------------------------*/
 /* CREATION DES UTILISATEURS */
 /*---------------------------*/
@@ -163,7 +168,7 @@ INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (5,'Netflix','Real
 /* creation d'un vue et d'un trigger pour emuler la cle etrangere lors de l'insertion */
 CREATE VIEW etape4_gaulois_vue
 AS
-SELECT * FROM etape4_gaulois;
+SELECT * FROM system.etape4_gaulois;
 GRANT SELECT, INSERT, DELETE ON etape4_gaulois_vue TO proprietaire, amisCommuns, amisObelix;
 
 /* trigger sur l'insertion */
@@ -174,13 +179,13 @@ DECLARE
 	village_id INT;
 BEGIN
 	SELECT id INTO village_id
-	FROM etape4_village@panoramix
+	FROM system.etape4_village@panoramix
 	WHERE id = :new.id;
 	
 	IF village_id IS NULL THEN
 		raise_application_error (-20001, 'le village n existe pas');
 	ELSE
-		INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
+		INSERT INTO system.etape4_gaulois (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
 	END IF;
 END;
 /

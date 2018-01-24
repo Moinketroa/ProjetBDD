@@ -42,6 +42,11 @@ CREATE ROLE romains;
 /* dotation des droits de connection pour faciliter le changement de role */
 GRANT CONNECT TO romains;
 
+GRANT INHERIT REMOTE PRIVILEGES ON proprietaire TO system;
+GRANT INHERIT REMOTE PRIVILEGES ON amisCommuns TO system;
+GRANT INHERIT REMOTE PRIVILEGES ON amisPanoramix TO system;
+GRANT INHERIT REMOTE PRIVILEGES ON romains TO system;
+
 /*---------------------------*/
 /* CREATION DES UTILISATEURS */
 /*---------------------------*/
@@ -180,3 +185,28 @@ GRANT SELECT, INSERT ON etape4_village TO proprietaire, amisCommuns, amisPanoram
 INSERT INTO etape4_village (id,nom,specialite,region) VALUES (1,'Alesia','Elevage','Cumaracum');
 INSERT INTO etape4_village (id,nom,specialite,region) VALUES (2,'Anichium','Peche','Condate');
 INSERT INTO etape4_village (id,nom,specialite,region) VALUES (3,'Gergovie','Cueuille','Nemessos');
+
+/* creation d'un vue et d'un trigger pour emuler la cle etrangere lors de la suppression */
+CREATE VIEW etape4_village_vue
+AS
+SELECT * FROM system.etape4_village;
+GRANT SELECT, INSERT, DELETE ON etape4_village_vue TO proprietaire, amisCommuns, amisPanoramix;
+
+/* trigger sur la suppression */
+CREATE OR REPLACE TRIGGER etape4_village_vue_trigger_delete
+INSTEAD OF DELETE ON etape4_village_vue
+FOR EACH ROW
+DECLARE
+	gaulois_village INT;
+BEGIN
+	SELECT village INTO gaulois_village
+	FROM system.etape4_gaulois@obelix
+	WHERE village = :old.id;
+	
+	IF gaulois_village IS NOT NULL THEN
+		raise_application_error (-20001, 'le village ne peut pas etre supprime, il depend d un ou plusieurs gaulois');
+	ELSE
+		DELETE FROM system.etape4_village WHERE id = :old.id;
+	END IF;
+END;
+/
