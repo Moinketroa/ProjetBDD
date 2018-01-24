@@ -170,7 +170,7 @@ CREATE TABLE etape3_village (
 GRANT SELECT ON etape3_village TO proprietaire, amisCommuns, amisObelix;
 
 /* creation de la table gaulois, incomplete */
-CREATE TABLE etape3_gaulois (
+CREATE TABLE etape3_gaulois (	
     id INT PRIMARY KEY NOT NULL,
     profession VARCHAR(20) NOT NULL,
     village INT NOT NULL,

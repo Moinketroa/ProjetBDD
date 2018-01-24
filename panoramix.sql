@@ -211,14 +211,14 @@ INSERT INTO etape3_gaulois (id,nom) VALUES (5,'Netflix');
 CREATE VIEW etape3_village_vue 
 AS
 SELECT villageO.id, villageP.nom, villageO.specialite, villageP.region
-FROM system.etape3_village@obelix AS villageO JOIN system.etape3_village AS villageP
+FROM system.etape3_village@obelix villageO JOIN system.etape3_village villageP
 ON villageO.id = villageP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_village_vue TO proprietaire, amisCommuns;
 
 CREATE VIEW etape3_gaulois_vue 
 AS
-SELECT gauloisO.id, gauloisP.nom, gauloisO.profession, gauloisP.village
-FROM system.etape3_gaulois@obelix AS gauloisO JOIN system.etape3_gaulois AS gauloisP
+SELECT gauloisO.id, gauloisP.nom, gauloisO.profession, gauloisO.village
+FROM system.etape3_gaulois@obelix gauloisO JOIN system.etape3_gaulois gauloisP
 ON gauloisO.id = gauloisP.id;
 GRANT SELECT, INSERT, DELETE ON etape3_gaulois_vue TO proprietaire, amisCommuns;
 

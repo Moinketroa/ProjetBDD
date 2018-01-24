@@ -135,10 +135,10 @@ SELECT * FROM system.etape3_village_vue;
 SELECT * FROM system.etape3_gaulois_vue;
 
 /* insertion d'un village qui sera fragmente entre les 2 bases */
-INSERT INTO system.etape2_village_vue (id,nom,specialite,region) VALUES (55,'Rome','Politique','Italie');
+INSERT INTO system.etape3_village_vue (id,nom,specialite,region) VALUES (55,'Rome','Politique','Italie');
 
 /* insertion d'un gaulois avec lie a rome qui sera fragmente entre les 2 bases */
-INSERT INTO system.etape2_gaulois_vue (id,nom,profession,village) VALUES (1664,'Reveilleaheurefix','Marchand de cervoise',55);
+INSERT INTO system.etape3_gaulois_vue (id,nom,profession,village) VALUES (1664,'Reveilleaheurefix','Marchand de cervoise',55);
 
 /* visualisation des changements */
 /* local */
@@ -174,6 +174,8 @@ EXCEPTION
 	ROLLBACK TO beginning;
 	DBMS_OUTPUT.PUT_LINE('Insert has been rooled back to \'beginning\'');
 END;
+/
+
 
 /*---------*/
 /* ETAPE 4 */
@@ -208,6 +210,7 @@ BEGIN
 	WHERE id = 1
 	FOR UPDATE;
 END;
+/
 
 /* execute chez panoramix */
 DECLARE
@@ -229,3 +232,4 @@ BEGIN
 	WHERE id = 1
 	FOR UPDATE;
 END;
+/
