@@ -271,6 +271,11 @@ CREATE TABLE etape4_village (
 );
 GRANT SELECT, INSERT ON etape4_village TO proprietaire, amisCommuns, amisPanoramix;
 
+/* insertion de tuples */
+INSERT INTO etape4_village (id,nom,specialite,region) VALUES (1,'Alesia','Elevage','Cumaracum');
+INSERT INTO etape4_village (id,nom,specialite,region) VALUES (2,'Anichium','Peche','Condate');
+INSERT INTO etape4_village (id,nom,specialite,region) VALUES (3,'Gergovie','Cueuille','Nemessos');
+
 /* creation d'un vue et d'un trigger pour emuler la cle etrangere lors de la suppression */
 CREATE VIEW etape4_village_vue
 AS

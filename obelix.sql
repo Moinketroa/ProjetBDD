@@ -254,6 +254,13 @@ CREATE TABLE etape4_gaulois (
 );
 GRANT SELECT ON etape4_gaulois TO proprietaire, amisCommuns, amisObelix;
 
+/* insertion de tuples */
+INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (1,'Trisomix','Artiste',1);
+INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (2,'Barometrix','Meteorologue',2);
+INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (3,'Aplusbegalix','Mathematicien',3);
+INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (4,'Porquepix','Marchand de vin',3);
+INSERT INTO etape4_gaulois (id,nom,profession,village) VALUES (5,'Netflix','Realisateur',1);
+
 /* creation d'un vue et d'un trigger pour emuler la cle etrangere lors de l'insertion */
 CREATE VIEW etape4_gaulois_vue
 AS
