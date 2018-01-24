@@ -24,14 +24,14 @@ GRANT SELECT ON etape1_gaulois_vue_mat TO proprietaire, amisCommuns, amisObelix;
 /* les vues sont dupliquees chez panoramix */
 CREATE VIEW etape2_village_vue
 AS
-SELECT * FROM etape2_village@obelix UNION
-SELECT * FROM etape2_village@panoramix;
+SELECT * FROM system.etape2_village@obelix UNION
+SELECT * FROM system.etape2_village@panoramix;
 GRANT SELECT, INSERT, DELETE ON etape2_village_vue TO proprietaire, amisCommuns;
 
 CREATE VIEW etape2_gaulois_vue
 AS
-SELECT * FROM etape2_gaulois@obelix UNION
-SELECT * FROM etape2_gaulois@panoramix;
+SELECT * FROM system.etape2_gaulois@obelix UNION
+SELECT * FROM system.etape2_gaulois@panoramix;
 GRANT SELECT, INSERT, DELETE ON etape2_gaulois_vue TO proprietaire, amisCommuns;
 
 /* creation des triggers pour l'insertion en fragmentation horizontale */
@@ -41,9 +41,9 @@ INSTEAD OF INSERT ON etape2_village_vue
 REFERENCING new AS new old AS old
 BEGIN
 	IF mod(:new.id, 2) = 0 THEN
- 		INSERT INTO etape2_village@panoramix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
+ 		INSERT INTO system.etape2_village@panoramix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
 	ELSE
-		INSERT INTO etape2_village@obelix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
+		INSERT INTO system.etape2_village@obelix (id,nom,specialite,region) VALUES (:new.id, :new.nom, :new.specialite, :new.region);
 	END IF;
 END;
 /
@@ -53,9 +53,9 @@ INSTEAD OF INSERT ON etape2_gaulois_vue
 REFERENCING new AS new old AS old
 BEGIN
 	IF mod(:new.village, 2) = 0 THEN
-		INSERT INTO etape2_gaulois@panoramix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
+		INSERT INTO system.etape2_gaulois@panoramix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
 	ELSE
-		INSERT INTO etape2_gaulois@obelix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
+		INSERT INTO system.etape2_gaulois@obelix (id,nom,profession,village) VALUES (:new.id, :new.nom, :new.profession, :new.village);
 	END IF;
 END;
 /

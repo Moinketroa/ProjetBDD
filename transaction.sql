@@ -8,25 +8,25 @@
 CONNECT obelix/obelix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois g, system.etape1_village v WHERE g.village=v.id;
 
 /*-- ROLE : AMISCOMMUNS --*/
 CONNECT asterix/asterix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois g, system.etape1_village v WHERE g.village=v.id;
 
 /*-- ROLE : AMISPANORAMIX --*/
 CONNECT informatix/informatix;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois g, system.etape1_village v WHERE g.village=v.id;
 
 /*-- ROLE : ROMAINS --*/
 CONNECT escuelleplus/escuelleplus;
 
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape1_gaulois@panoramix g, system.etape1_village@panoramix v WHERE g.village=v.id;
+FROM system.etape1_gaulois g, system.etape1_village v WHERE g.village=v.id;
 
 /* Sur Obelix */
 /*- Requete de localisation des gaulois sur panoramix -*/
@@ -100,11 +100,11 @@ FROM system.etape2_gaulois_vue g, system.etape2_village_vue v WHERE g.village=v.
 CONNECT obelix/obelix;
 /* Tables locales frangmentees */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape2_gaulois@panoramix g, system.etape2_village@panoramix v WHERE g.village=v.id;
+FROM system.etape2_gaulois g, system.etape2_village v WHERE g.village=v.id;
 
 /* Select sur la vue de defragmentation */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape2_gaulois_vue@panoramix g, system.etape2_village_vue@panoramix v WHERE g.village=v.id;
+FROM system.etape2_gaulois_vue g, system.etape2_village_vue v WHERE g.village=v.id;
 
 /* insertion d'un village avec un id pair qui sera cree sur la base panoramix */
 INSERT INTO system.etape2_village_vue (id,nom,specialite,region) VALUES (42,'Divodurum','Menuiserie','Lorraine');
@@ -115,11 +115,11 @@ INSERT INTO system.etape2_gaulois_vue (id,nom,profession,village) VALUES (1664,'
 /* visualisation des changements */
 /* local */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape2_gaulois@panoramix g, system.etape2_village@panoramix v WHERE g.village=v.id;
+FROM system.etape2_gaulois g, system.etape2_village v WHERE g.village=v.id;
 /* vue */
 /* Select sur la vue de defragmentation */
 SELECT g.nom, g.profession, v.nom village, v.specialite, v.region 
-FROM system.etape2_gaulois_vue@panoramix g, system.etape2_village_vue@panoramix v WHERE g.village=v.id;
+FROM system.etape2_gaulois_vue g, system.etape2_village_vue v WHERE g.village=v.id;
 
 /* ETAPE 3 */
 /* Transaction qui echoue */
